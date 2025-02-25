@@ -48,27 +48,6 @@ Point Pop() // извлекает элемент из стека и возвра
     return result; // возвращаем результат
 }
 
-void FloodFill(Point start, char fillColor, char borderColor, char** maze)
-{
-    Push(start); // помещаем координаты затравочного пикселя в стек
-    while (!IsEmpty()) // пока стек не пуст
-    {
-        Point p = Pop();  // извлекаем пиксел из стека
-        if (maze[p.y][p.x] != fillColor) // если ему не присвоено значение заливки
-        {
-            maze[p.y][p.x] = fillColor; // заливаем
-        }
-        if (maze[p.y][p.x + 1] != fillColor && maze[p.y][p.x + 1] != borderColor) // проверяем пиксед справа от текущего
-            Push(Point{ p.x + 1, p.y }); // если он не закрашен и не является границей, то помещаем его координаты в стек
-        if (maze[p.y][p.x - 1] != fillColor && maze[p.y][p.x - 1] != borderColor) // то же для левогo
-            Push(Point{ p.x - 1, p.y });
-        if (maze[p.y - 1][p.x] != fillColor && maze[p.y - 1][p.x] != borderColor) // то же для верхнего
-            Push(Point{ p.x, p.y - 1 });
-        if (maze[p.y + 1][p.x] != fillColor && maze[p.y + 1][p.x] != borderColor) // то же для нижнего
-            Push(Point{ p.x, p.y + 1 });
-    }
-}
-
 bool FindPosition(char** maze, int sizeX, int sizeY)
 {
 	int p = 0;
@@ -95,23 +74,19 @@ bool isMazeValid(Point start, char fillColor, char borderColor, char** maze)
     {
         Point p = Pop();  // извлекаем пиксел из стека
         if (maze[p.y][p.x] == 'E') {
-            ClearStack();
             return true;
-        }
-        if (buf[p.y][p.x] != fillColor) // если ему не присвоено значение заливки
-        {
-            buf[p.y][p.x] = fillColor; // заливаем
-
-        }
-
-        if (buf[p.y][p.x + 1] != fillColor && buf[p.y][p.x + 1] != borderColor) // проверяем пиксед справа от текущего
-            Push(Point{ p.x + 1, p.y }); // если он не закрашен и не является границей, то помещаем его координаты в стек
-        if (buf[p.y][p.x - 1] != fillColor && buf[p.y][p.x - 1] != borderColor) // то же для левого
-            Push(Point{ p.x - 1, p.y });
-        if (buf[p.y - 1][p.x] != fillColor && buf[p.y - 1][p.x] != borderColor) // то же для верхнего
-            Push(Point{ p.x, p.y - 1 });
-        if (buf[p.y + 1][p.x] != fillColor && buf[p.y + 1][p.x] != borderColor) // то же для нижнего
-            Push(Point{ p.x, p.y + 1 });
+            if (maze[p.y][p.x] != fillColor) // если ему не присвоено значение заливки
+            {
+                maze[p.y][p.x] = fillColor; // заливаем
+            }
+            if (maze[p.y][p.x + 1] != fillColor && maze[p.y][p.x + 1] != borderColor) // проверяем пиксед справа от текущего
+                Push(Point{ p.x + 1, p.y }); // если он не закрашен и не является границей, то помещаем его координаты в стек
+            if (maze[p.y][p.x - 1] != fillColor && maze[p.y][p.x - 1] != borderColor) // то же для левогo
+                Push(Point{ p.x - 1, p.y });
+            if (maze[p.y - 1][p.x] != fillColor && maze[p.y - 1][p.x] != borderColor) // то же для верхнего
+                Push(Point{ p.x, p.y - 1 });
+            if (maze[p.y + 1][p.x] != fillColor && maze[p.y + 1][p.x] != borderColor) // то же для нижнего
+                Push(Point{ p.x, p.y + 1 });
     }
     return false;
 }
