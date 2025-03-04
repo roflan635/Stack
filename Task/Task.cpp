@@ -48,55 +48,51 @@ Point Pop() // извлекает элемент из стека и возвра
     return result; // возвращаем результат
 }
 
-bool FindPosition(char** maze, int sizeX, int sizeY)
+Point FindPosition(char maze[15][15])
 {
-	int p = 0;
+    Point p = {-1};
     for (int i = 0; i < 15; i++)  // цикл пробегает массив по строкам
     {
         for (int j = 0; j < 15; j++) // цикл пробегает массив по столбцам
         {
-            if (maze[i][j] == 3)    // проверяем, если текущий элемент равен 3 - нашли
-            {                       // требуемую позицию
-                p++;
+            if (maze[i][j] == 'P')
+            {
+               return p = { i,j };
             }
         }
     }
-    if (p == 1)
-        return true;
-    else
-        return false;
+    return p;
 }
 
-bool isMazeValid(Point start, char fillColor, char borderColor, char** maze)
+bool isMazeValid(Point player, char maze[15][15])
 {
-    Push(start); // помещаем координаты затравочного пикселя в стек
+    Push(player); // помещаем координаты затравочного пикселя в стек
     while (!IsEmpty()) // пока стек не пуст
     {
         Point p = Pop();  // извлекаем пиксел из стека
-        if (maze[p.y][p.x] == 'E') {
+        if (maze[p.x][p.y] == 'E')
             return true;
-            if (maze[p.y][p.x] != fillColor) // если ему не присвоено значение заливки
-            {
-                maze[p.y][p.x] = fillColor; // заливаем
-            }
-            if (maze[p.y][p.x + 1] != fillColor && maze[p.y][p.x + 1] != borderColor) // проверяем пиксед справа от текущего
-                Push(Point{ p.x + 1, p.y }); // если он не закрашен и не является границей, то помещаем его координаты в стек
-            if (maze[p.y][p.x - 1] != fillColor && maze[p.y][p.x - 1] != borderColor) // то же для левогo
-                Push(Point{ p.x - 1, p.y });
-            if (maze[p.y - 1][p.x] != fillColor && maze[p.y - 1][p.x] != borderColor) // то же для верхнего
-                Push(Point{ p.x, p.y - 1 });
-            if (maze[p.y + 1][p.x] != fillColor && maze[p.y + 1][p.x] != borderColor) // то же для нижнего
-                Push(Point{ p.x, p.y + 1 });
+        if (maze[p.x][p.y] != '?') // если ему не присвоено значение заливки
+            maze[p.x][p.y] = '?'; // заливаем
+
+        if (maze[p.x + 1][p.y] != '?' && maze[p.x + 1][p.y] != '#') // проверяем пиксел справа от текущего
+            Push(Point{ p.x + 1, p.y }); // если он не закрашен и не является границей, то помещаем его координаты в стек
+        if (maze[p.x - 1][p.y] != '?' && maze[p.x - 1][p.y] != '#') // то же для левого
+            Push(Point{ p.x - 1, p.y });
+        if (maze[p.x][p.y - 1] != '?' && maze[p.x][p.y - 1] != '#') // то же для верхнего
+            Push(Point{ p.x, p.y - 1 });
+        if (maze[p.x][p.y + 1] != '?' && maze[p.x][p.y + 1] != '#') // то же для нижнего
+            Push(Point{ p.x, p.y + 1 });
     }
     return false;
 }
 
-bool CanMoveToExit(char** maze)
+bool CanMoveToExit(char maze[15][15])
 {
-    int sizeX = 15;
-    int sizeY = 15;
-    bool player = FindPosition(maze, sizeX, sizeY);
-
+    Point player = FindPosition(maze);
+    if (player.x == -1) return false;
+    isMazeValid(player, maze);
+    return true;
 }
 /*
 Создайте функцию, которая проверяет достижимость выхода из лабиринта.
